@@ -1,0 +1,470 @@
+Lec 5
+	//сначала пытался в английский, но потом осознал, что это не удобно, я слишком тупой для этого дерьма
+	fdisk -l 
+		list all disks
+		/dev/sda1
+		/dev/sda2 extended 
+		/dev/sda5
+		/dec/sda6 
+		we can see in some situations only one /dev/sdb
+
+	fdisk <disk> (extended disk use here)
+		here we can make new disk or delete exist disk
+		here is some troubles, because storage is serial
+
+		RAID arrays
+		RAID0 4TB + 4TB = 8TB
+		RAID1 4TB + 4TB = 4TB
+		we need it for safety 
+		RAID5 4 + 4 + 4 + 4 = 12 
+		here some place is reserve
+		software.RAID 
+
+		mdadm
+		LVM
+		sda1 - lv (logical volume) 
+
+
+	apt-get install lvm2
+
+
+	(interesting)
+		halt -p
+		power off
+
+
+	в VM 
+		создаем SATA (не IDE)(+) 4x1gb: D1 D2 D3 D4  
+
+	term:  
+	pvcreate /dev/sdb /dev/sdc #создали диски
+	vgcreate <group_name> /dev/sdb /dev/sdc #кинули в группу 
+	vgdisplay #вывели инфо volume group display
+
+	lvcreate -L(в мегабайт) <size> -n <name> <group_name>
+	lvdisplay 
+	ls -l /dev/<group_name>/
+	mkfs.ext4 /dev/<group_name>/<name>
+
+mount
+	mkdir /mnt/<v-name>
+	mount /dev/<group_name>/<v-name> /mnt/<name>
+	df -h (show)
+
+test
+	touch /mnt/docs/newfile
+	cp /bin/bash /mnt/<name>
+	df -h
+
+unmount
+	umount /mnt/docs
+	ls -l /docs
+
+увеличить размер
+	lvextend -L +100M /dev/lab308/docs
+	df -h #не покажет изменений
+	поэтому
+	resize2fs /dev/mapper/lab308-docs
+	расстянет до доступного
+
+создание FAT
+	apt install dosfstools
+	mkfs. [tab not once]
+	mkfs.vfat -F 32 /dev/lab308/soft
+	
+	file -s /dev/dm-0 (dm-1)
+	mkdir /mnt/soft
+	mount /dev/lab308/soft /mnt/soft
+	df -h
+
+	umount /mnt/soft
+	fsck. [tab] (file system check) 
+	fsck.vfat /dev/mapper/lab308-soft или fsck /dev/mapper/lab308-soft
+
+	df -h
+	umount /mnt/docs
+	vim /etc/fstab
+		UID - это специально создано для уникальности, так как не sda5 неудобное в этом плане название, может все поплыть при подключении, но можно написать например /dev/sda5 /home
+	blkid №показывает UID
+	vim /etc/fstab
+		/dev/lab308/docs /mnt/docs ext4(или auto) default 0 0 #там есть подсказка, это для автоматического маунта при входе в систему
+	mount -a показать кто замаунчен
+
+	это лабы 6 и 7
+
+
+
+
+
+
+
+
+26.10.18
+Лекция 7
+
+	Добавляем виртуальных пользователей FTP
+
+	в vsftpd (находится в /etc/vsftpd.conf) добавить опцию guest_enasble (добавить строчку guest_enable=YES) 
+	- это активирует виртуальных пользователей (это не анонимусы)
+
+	в *никс системах можно подключать нестандартные способы аутентификации (с помощью этого мы и запускаем виртуальных пользователей)
+
+	/etc/pam.d/login
+		из этого файла тянутся файлы, которые проводят аутентификацию в строках типа
+		@include common-auth
+		(но есть и другие кроме common-auth, common-account, -password и -session)
+	->
+	/etc/pam.d/common-auth (этот файл выполняется последовательно)
+		auth required(должна быть выполнена успешно)/requisite(пройдет все модули до конца, а потом вылетит в конце, ввел пароль и не правильно)/sufficient
+		- вы знаете логин и пароль к системе
+		authorization 
+		- непосредственно доступ (хз) 
+	/etc/pam.d/vsftpd
+		там есть строка 
+		y file=/etc/ftpusers onerr=succeed
+		проверяет на то что есть такой пользователь
+		далее пам инклуды 
+
+	увы виртуальные пользователи заменят локальные: 
+		мы заменим -account, -auth и session
+
+	поставим pwdfile
+		apt install libpam-pwdfile
+		- это модуль на замену стандартному
+		(это типа авторизация через что-то вроде бд)
+		
+		если нужна документация
+		/usr/share/doc/libpam-pwdfile/README
+
+	поставим htpasswd
+		apt install apache2-utils
+		(сам веб-сервис не поставится)
+
+
+	создадим файл с учетной записью
+
+	правильный вариант для апача (но не для htpasswd):
+		htpasswd -c /etc/virtusers (это название файла который хранит пользователей) ivan (имя пользователя)
+
+		можно посмотреть что там написано cat /etc/virtusers
+
+	правильный вариант для htpasswd:
+		htpasswd -d (нужно для htpasswd) -c /etc/virtusers (это название файла который хранит пользователей) ivan (имя пользователя)
+
+	заходим в vsftpd: 
+		комментируем инклуды
+		пишем строку
+		auth required pam_pwdfile.so file=/etc/virtusers //авторизация
+		комментируем pam_shells.so
+		пишем строки 
+		account required pam_permit.so //тоже там для чего-то нужно
+		session required pam_permit.so //созданние комон файлов для сессии
+
+	service vstfpd restart
+
+	заходим через терминал 
+		ftp
+		open (192.168.177.100)(например - это ftp сервер наш) 
+		Ivan
+		вводим пароль
+		quit
+
+
+	ls -l /srv/ftp/
+	mkdir /srv/ftp/virtual
+	touch /srv/ftp/virtual/hello.txt //просто файл
+
+	изменим локальный root для виртуальных пользователей
+		в vsftpd добавляем 
+		local_root=/srv/ftp/virtual
+
+	service vsftpd restart
+
+		входим под Иваном 
+		ls 
+		там будет hello.txt
+
+	htpasswd -d /etc/virtusers vasia (без -c, чтобы добавить в файл, а не переписать его)
+	cat /etc/virtusers
+		-должно выйти две записи
+
+	mkdir /srv/ftp/virtual/ivan //создаем руты для каждого пользователя
+	mkdir /srv/ftp/virtual/vasia
+	touch /srv/ftp/virtual/ivan/hi-ivan.txt //файлы для проверки
+	touch /srv/ftp/virtual/vasia/hi-vasia.txt
+
+	заходим в vsftpd
+		меняем строку local_root=... на
+		local_root=/srv/ftp/virtual/$USER
+    	добавим строку 
+    	user_sub_token=$USER
+
+	service vsftpd restart
+	заходим проверяем.
+
+	chown -R ftp:ftp /srv/ftp/virtual/ivan //меняем владельца
+	chown -R ftp:ftp /srv/ftp/virtual/vasia //меняем владельца
+
+
+
+
+
+
+
+
+
+02.11.18
+Лекция 8
+	
+	Установим пакет quota
+	apt install quota
+
+	repqouta -a
+	ничего не выведется, так как механизм не активирован
+
+	опции монтирования для файловой системы (grpqouta(для групп) noquota(никому) quota = usrquota(для пользователей))
+
+	заходим в "etc/fstab" (отвечает за загрузку файловой системы):
+		меняем строку - s=remount-ro,usrquota,grpquota
+		меняем строку, где /dev/sda5 /home - defaults,usrquota,grpquota
+
+	перечитаем конфигурационный файл (для каждой файловой системы): 
+	mount -o remount /
+	mount -o remount /home
+
+	(для уверенности можно посмотреть mount)
+
+	repquota -a
+	наругается, так как механизм теперь активирован, но не найдены файлы с параметрами
+
+	параметры quota, которые нам нужны:
+	-u - check user files
+	-g - check group files
+	-c - create new quota files 
+	-m - no remount read-onle
+	-a - check all filesystems
+
+	в итоге наш составной параметр:
+	quotacheck -ugcma 
+
+	repquota -a
+	теперь выведет все необходимое 
+	здесь информация по блокам и по файлам
+
+	измененим что-нибудь в директории одного из пользователей (например файл создадим)
+
+	repquota -a 
+	однако вроде информация здесь не меняется динамически, так как не включен сервис следящий за изменением файлов в директориях для квоты
+
+	service quota restart
+	service quotaon restart
+	(теперь динамически меняется список)
+	repquota -a  (может обновляться не сразу)
+
+	создадим файл размеров в 40 блоков и размера 1000
+	dd if=/dev/urandom of=testblk(название) count=40 bs=1000
+
+	смотрим изменения repquota -a 
+
+	edqouta -u (имя пользователя) 
+	(откроется стандартным редактором)
+		создадим лимиты например для sda5
+		/dev/sda5 50(soft) 100(hard) 
+
+	пусть в пользователе используется 28 блоков
+
+	попробуем достичь лимитов 
+
+	(пытаемся создать файл который будет бесконечным)
+	cp /dev/urandom testdsddsagdgsdgvadsa
+	(выйдет ошибка) и созданный файл будет весить где-то под хардлимит 
+
+	удалим созданный файл  и создадим конкретный файл
+
+	cp /dev/urandom test count=20 bs=1000
+	repquota -a 
+
+	cp test1 test2
+	выйдет предупреждение, так как достигли мягкой квоты
+	repquota -a 
+	grace период (время выделенное на то, чтобы очистить место превышающее мягкую квоту) включается если была достигнута мягкая квота
+
+	если достигается жесткая квота - файл обрежется на "пол пути" например
+
+	grace период обнуляется, когда очистим директорию до состояния < мягкой квоты, потом если опять превысить таймер снова включится
+
+	чтобы сменить стандартный редактор (например на vim)
+	export EDITOR=vim
+
+	теперь попробуем сменить лимит количество файлов
+	edqouta -u (имя пользователя) 
+	(откроется стандартным редактором)
+		создадим лимиты например для sda5
+		/dev/sda5 15 и 20 (последний 2 столбика)
+
+	изначальное количество файлов пусть 12.
+
+	Создадим пустые файлы
+	touch 1
+	touch 2
+	touch 3
+	touch 4
+	(здесь привысится мягкий лимит и вас предупредят)
+
+	touch 5
+	touch 6
+	touch 7
+	touch 8
+	touch 9
+	(дальше создавать файлы невозможно)
+
+	изменим время grace для всех пользователей
+	edquota -u -T  
+
+	например поставим квоту 1hour и 1minute	
+	если инициировать срабатывание установки grace заново то увидим новые значения (если до изменения grace -T уже был grace - он не изменится)
+
+	изменим время grace для одного пользователя
+	setquota -u -T student 60 60 
+	таким образом мы выставим минуту grace для блоков и для файлов 
+
+	setquota -u -T student unset unset - grace станет незаданным.
+
+
+
+
+
+
+
+
+
+
+09.11.18
+  Лекция 9
+  	apt update 
+  	apt install apache2 (возможно уже есть)
+
+  	netstat -nap | grep apache
+  	service apache2 status
+
+  	vim /var/www/html/index.html
+  	mv /var/www/html/index.html /var/www/html/index.html.old
+  	echo "Hello" >/var/www/html/index.html.old
+
+  	откроем страницу в браузере (например сайт кафедры)
+  	там посмотрим отладчик браузера
+  	откроем самый первый запрос и в заголовке запроса можно увидеть что-то интересное (?)
+  	нас здесь интересует параметр host
+  	механика называется Virtual Hosts (позволяет создавать на одном адресе несколько сайтов)
+
+  	vim /etc/apache/apache2.conf
+  	этот файл подключает другие конфигурационные файлы апача
+		IncludeOptional conf/*.conf - это и подключает другие конф файлы
+		IncludeOptional sites-enabled/*.conf 
+
+	vim /etc/apache/sites-enabled/000-default.conf 
+	/etc/apache/sites-enabled/ - здесь по сути хранятся ссылки на файлы их папки /etc/apache/sites-available/
+
+	cp /etc/apache/sites-available/000-default.conf  /etc/apache/sites-available/lab308.conf
+
+	cd /etc/apache/sites-available/
+	vim lab308.conf
+		ServerName lab308.com (разкомментировали)
+		DocumentRoot /var/www/lab308
+
+	mkdir /var/www/lab308
+	cd /var/www/lab308
+
+	vim index.html
+		<html>
+			<b> Hello World </b>
+		</html>
+
+	ps -ef|grep apache (посмотреть у какого аккаунта запущен сервер)
+
+	a2ensite
+	команда создает символическую ссылку
+		в этой директории он предложит выбрать какой файл 
+		выберем lab308
+
+	systemctl reload apache2 (перечитываем конфиг)
+
+		надо найти файл hosts системы
+		!!!
+		если виндоус 
+		c:\windows\system32\drivers\etc\hosts
+		!!!
+
+	пишем в hosts
+	<свой ip-адрес> lab308.com
+
+	если попробовать попинговать (ping lab308.com на виндоус) то можно увидеть работает ли это
+
+	в браузере теперь идем на lab308.com 
+	увидим наш сайт с жирным hello world.
+
+	//Далее делаем то же самое только php// 
+	cd /etc/apache/sites-available/
+
+	cp lab308.conf lab307.conf 
+	vim lab307.conf
+		ServerName lab307.com (разкомментировали)
+		DocumentRoot /var/www/lab307
+
+	mkdir /var/www/lab307
+	cd /var/www/lab307
+	a2ensite lab307
+	systemctl reload apache2
+
+	отличие html от php
+	html - видим то, что лежит на диске (статические страницы)
+	php - динамические страницы, в таком случае программа отдает вам страницы
+
+		mod_php (модуль самого сервера) / fcgi (для разных сайтов можно настроить используемые интерпретаторы для каждого сайта)
+
+	apt install libapache2-mod-php
+
+	cd /var/www/lab307
+
+	vim index.php
+		<?php
+		phpinfo();
+		?>
+
+	пишем в hosts
+	<свой ip-адрес> lab307.com
+
+	если не работает то: 
+	systemctl restart apache2 
+	либо 
+	service apache2 restart 
+	////
+	в браузере теперь идем на lab307.com 
+	Мы сделали сайт, который содержит информацию, которую хотелось бы не афишировать (то есть нужно добавить авторизацию например)
+	
+	vim /etc/apache2/apache2.conf
+		здесь AllowOverride none стоит для всех 
+		где-то с конца находим этот параметр для Directory /var/www/ ставим AllowOverride all
+
+	systemctl reload (либо restart, либо через service) apache2 
+
+	cd /var/www/lab307
+	vim .htaccess
+		AuthType basic 
+		AuthName "MY SECRET AREA"
+		AuthUserFile /var/www/users.db (db просто так, ну это например датабэйсэс) (надо размещать в недоступном с сайта месте)
+		Require valid-user (такие файлы создадим например через htpasswd)
+
+	htpasswd -c /var/www/users.db vasia 
+	вводим пароль
+
+	в браузере теперь идем на lab307.com 
+	должен спросить
+	
+
+
+		
+
+
+
+
