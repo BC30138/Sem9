@@ -55,10 +55,16 @@
     root:x:0:0:root:/root:/bin/bash
     ```
 
-    На следующий: ДРУГОЙ СПОСОБ (sudo) 
+    На следующий:
 
     ```console
     root:x:0:0:root:/root:/bin/false
+    ```
+
+    либо 
+
+    ```console
+    root:x:0:0:root:/root:/bin/expire
     ```
 
     P.S.: Однако далее я вернул значение /bin/bash для *root* используя пользователя *student*.  
@@ -73,12 +79,16 @@
     root@bc30138:~$ adduser netadmin
     ```
 
-2. Осуществите передачу полномочий администратора *root* пользователю *netadmin* для выполнения команд **/sbin/iptables**, **/sbin/ipconfig**, **/sbin/ip**, **/sbin/route**, **/bin/netstat** и редактирования файла **/etc/network/interfaces**.
+2. Осуществите передачу полномочий администратора *root* пользователю *netadmin* для выполнения команд **/sbin/iptables**, **/sbin/ifconfig**, **/sbin/ip**, **/sbin/route**, **/bin/netstat** и редактирования файла **/etc/network/interfaces**.
     
+    Для этого добавим пользователя *netadmin* в **sudoers** и назначим команды, которые он
+    может выполнять. Для этого добавим следующую строку в **/etc/sudoers**  (**sudoedit** для безопасности, этот пользователь будет изолирован от остальной системы):
 
-    ТОЖЕ ЧЕРЕЗ sudo разрешить редактирование (edit)
+    ```console
+    netadmin ALL=(ALL:ALL) sudoedit /sbin/iptables, /sbin/ifconfig, /sbin/ip, /sbin/route, /bin/netstat, /etc/network/interfaces
+    ```
 
-    Передать пользователю права на файл можно с помощью команды **chown**:
+    Либо это можно сделать передав пользователю права на файл можно с помощью команды **chown**:
 
     ```console
     root@bc30138:~$ chown netadmin /sbin/iptables
@@ -89,8 +99,10 @@
     root@bc30138:~$ chown netadmin /etc/network/interfaces
     ```
 
-    <span style="color:red"> Немного не понял, так как вроде все эти команды итак доступны всем пользователям </span>
-    ИМЕНННО ИСПОЛЬЗОВАНИЕ
-
 3. Проверьте корректность делегирования полномочий, попытавшись выполнить неразрешенные пользователю *netadmin* команды от лица администратора. 
 
+    ```console
+    netadmin@bc30138:~$ sudo mkdir /temp
+    [sudo] password for netadmin
+    Sorry, user netadmin is not allowed to execute '/bin/mkdir /temp' as root on debian
+    ```
