@@ -1,0 +1,5 @@
+in this paper discussing implementation and improvement of traditional k-means algorithm for clustering analysis problem.
+First of all, authors gave description of traditional k-means algorithm, then carried out search for areas of concern.
+Authors tried to enhance traditional algorithm and made a program, which was tested on proved datasets.
+Authors gave comparison of their proposed enhanced algorithm and traditional k-means with such parameters like computing speed, time complexity, accuracy.
+Also was reviewed papers of other authors and their proposed versions of this algorithm.
