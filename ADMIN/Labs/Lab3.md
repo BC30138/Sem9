@@ -77,7 +77,7 @@
     ![Boot](https://raw.githubusercontent.com/BC30138/Studying/master/ADMIN/Labs/Screens/boot.png)
 
     Все загружено без ошибок:
-    ![Boot](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/bootend.png?raw=true)
+    ![Boot-end](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/bootend.png?raw=true)
 
 3. Создайте загрузочную дискету GRUB:
    
@@ -100,7 +100,9 @@
     done
     ```
 4. Перезагрузите систему. Загрузитесь с загрузочной дискеты:
-   ```console
-   ```
+   
+   Все прошло успешно:
 
-   /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso
+   ![grub](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/boot-grub.png?raw=true)
+
+   ![grub-end](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/grub-end.png?raw=true)
