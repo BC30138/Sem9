@@ -24,8 +24,60 @@
 
 1. Создайте загрузочную флешку LILO:
 
+    Для этого установим пакет LILO.
+    ```console
+    root@bc30138:/$ apt-get install lilo 
+    root@bc30138:~$ liloconfig
+    1 images '/boot/vmlinuz*' found.
+    New file created as: /etc/lilo.conf 
+    Now you must execute '/sbin/lilo' to activate this new configuation!
+    ```
+
+    Монтируем флешку. 
+
+    ```console
+    root@bc30138:~$ mount /dev/sdf1 /mnt/usb
+    ```
+
+    Скоприуем файл ядра и драйверов на флешку с таким же путем (в нашем случае возьмем их из папки **/boot/**)
+
+    ```console
+    root@bc30138:~$ mkdir /mnt/usb/boot
+    root@bc30138:~$ cd /boot
+    root@bc30138:/boot$ cp initrd.img-4.9.0-7-amd64 vmlinuz-4.9.0-7-amd64 /mnt/usb/boot
+    ```
+
+    Отредактируем файл **/etc/lilo.conf**. Требуется изменить следующие параметры: 
+    ```console
+    root@bc30138:~$ vim /etc/lilo.conf
+    boot = /dev/sdf # устройство
+    root = /dev/sdf1 # корень
+    map = /mnt/usb/boot/map # поменять именно на такого рода
+    image = /mnt/usb/boot/vmlinuz-4.9.0-7-amd64 # расположение ядра
+    initrd = /mnt/usb/boot/initrd.img-4.9.0-7-amd64 # расположение драйверов
+    ```
+
+    Запускаем LILO:
+    ```console
+    root@bc30138:~$ lilo
+    Warning: /dev/sdf is not on the first disk
+    Added Linux  +  *
+    One warning was issued.
+    ```
+
+    Размонтируем флешку: 
+
+    ```console
+    root@bc30138:~$ umount /dev/sdf1
+    ```
+
 2. Перезагрузите систему. Загрузитесь с загрузочной флешки:
-   
-3. Создайте загрузочную дискету GRUB:
-   
-4. Перезагрузите систему. Загрузитесь с загрузочной дискеты:
+
+   ```console
+   ```
+4. Создайте загрузочную дискету GRUB:
+   ```console
+   ```
+5. Перезагрузите систему. Загрузитесь с загрузочной дискеты:
+   ```console
+   ```
