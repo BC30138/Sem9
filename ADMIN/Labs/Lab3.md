@@ -71,13 +71,16 @@
     root@bc30138:~$ umount /dev/sdf1
     ```
 
-2. Перезагрузите систему. Загрузитесь с загрузочной флешки:
+1. Перезагрузите систему. Загрузитесь с загрузочной флешки:
+    
+    Наблюдаем загрузку с флешки.
+   ![Boot](https://raw.githubusercontent.com/BC30138/Studying/master/ADMIN/Labs/Screens/boot.png)
 
-   ![Boot](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/boot.png?raw=true)
-4. Создайте загрузочную дискету GRUB:
+   
+2. Создайте загрузочную дискету GRUB:
    ```console
    ```
-5. Перезагрузите систему. Загрузитесь с загрузочной дискеты:
+3. Перезагрузите систему. Загрузитесь с загрузочной дискеты:
    ```console
    ```
 
