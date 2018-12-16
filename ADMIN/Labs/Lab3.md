@@ -73,11 +73,12 @@
 
 2. Перезагрузите систему. Загрузитесь с загрузочной флешки:
 
-   ```console
-   ```
+   ![Boot](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/boot.png?raw=true)
 4. Создайте загрузочную дискету GRUB:
    ```console
    ```
 5. Перезагрузите систему. Загрузитесь с загрузочной дискеты:
    ```console
    ```
+
+   /Applications/VirtualBox.app/Contents/MacOS/VBoxGuestAdditions.iso
