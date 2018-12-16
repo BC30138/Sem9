@@ -71,16 +71,35 @@
     root@bc30138:~$ umount /dev/sdf1
     ```
 
-1. Перезагрузите систему. Загрузитесь с загрузочной флешки:
+2. Перезагрузите систему. Загрузитесь с загрузочной флешки:
     
-    Наблюдаем загрузку с флешки.
-   ![Boot](https://raw.githubusercontent.com/BC30138/Studying/master/ADMIN/Labs/Screens/boot.png)
+    Наблюдаем загрузку с флешки:
+    ![Boot](https://raw.githubusercontent.com/BC30138/Studying/master/ADMIN/Labs/Screens/boot.png)
 
+    Все загружено без ошибок:
+    ![Boot](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/bootend.png?raw=true)
+
+3. Создайте загрузочную дискету GRUB:
    
-2. Создайте загрузочную дискету GRUB:
-   ```console
-   ```
-3. Перезагрузите систему. Загрузитесь с загрузочной дискеты:
+    Монтируем флешку и коприуем файлы ядра и драйверов на флешку с таким же путем (пункт 2). 
+   
+    Устанавливаем GRUB. В качестве аргументов корневой каталог съемного диска и сам диск.
+    ```console
+    root@bc30138:/boot$ grub-install --root-directory=/mnt/usb /dev/sdf
+    Installing for i386-pc platform.
+    Installation finished. No error reported.
+    ```
+
+    Создаем конфиг-файл для GRUB. Можно воспользоваться командой автоматического создания файла.
+
+    ```console
+    root@bc30138:/boot$ grub-mkconfig -o /mnt/usb/boot/grub/grub.cfg
+    Generating grub configuration file ...
+    Found linux image: /boot/vmlinuz-4.9.0-7-amd64
+    Found initrd image: /boot/initrd.img-4.9.0-7-amd64
+    done
+    ```
+4. Перезагрузите систему. Загрузитесь с загрузочной дискеты:
    ```console
    ```
 
