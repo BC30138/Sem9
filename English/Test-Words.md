@@ -160,7 +160,7 @@ orbit | двигаться по орбите
 In recognition of | в знак признательности
 rocketry | ракетная техника
 manually attitude control | стабилизация положения в пространстве
-alias | союзники
+allies | союзники
 satellite | спутник
 In addition | ко всему прочему
 derives | обусловлено, вытекает
