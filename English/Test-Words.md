@@ -63,7 +63,7 @@ artificial intelligence | искусственный интеллект
 domain | область знаний, науки
 Russian Academy of Science (PAS) | РАН
 was founded | основан
-The president of university | ректор
+Rector | ректор
 Doctor of technical science | доктор технических наук
 Academician | академик
 in response to | в ответ 
