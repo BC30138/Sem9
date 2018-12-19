@@ -57,9 +57,6 @@ Faculty office | деканат
 full-time / part time / correspondence department | дневное / вечернее / заочное отделение  
 First-year student | Студент первого курса
 State Attestation Commission | Государственная аттестационная комиссия
-|
-|
-|
 collaboration | сотрудничество
 adopt | придерживаться, усваивать
 artificial intelligence | искусственный интеллект
@@ -99,9 +96,6 @@ Proceedings of the conference | материалы конференции
 Publishing house | издательство
 Doctoral studies | докторантура
 scientist | Ученый
-|
-|
-|
 Rip off | воровать, грабить, украсть
 Rush into print | преждевременно выпустить в печать
 To be onto good thing | использовать благоприятную возможность, быть на коне
@@ -143,9 +137,6 @@ A pattern of innovation | образец нововведений
 A steam engine | паровой двигатель
 concave | вогнутый
 Magnification | увеличение
-|
-|
-|
 Exploration | исследование, изучение
 Heated competition | ярое соперничество
 Rivalry | соперничество
@@ -175,10 +166,7 @@ In addition | ко всему прочему
 derives | обусловлено, вытекает
 Hardware | аппаратное обеспечение
 Disk drive | дисковод
-Floppy disk | дискета
-|
-|
-| 
+Floppy disk | дискета 
 fiction | фантастика
 non-fiction | документалистика
 to face a problem | столкнуться с проблемой
