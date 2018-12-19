@@ -24,7 +24,7 @@ Practical learning of chemistry was hard for me, because I couldnt stand the sme
 
 My peer was interested in many things, except music, because he couldnt hold the tune.
 
-After getting Doctoral Degree my father worked (at!) one of the biggest companies in the world Scoltech(?).
+After getting Doctoral Degree my father worked (at!) one of the biggest companies in the world Coltech(?).
 
 #### Unit 4
 
