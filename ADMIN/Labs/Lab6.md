@@ -233,9 +233,9 @@
 4. Разделите полученные **/dev/md1** и **/dev/md2** на 2 раздела каждый:
    
    Разделим тома с помощью утилиты **cfdisk**:
-   <!-- ![RAID-f](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/RAID-first.png?raw=true) -->
+   ![RAID-f](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/RAID-first.png?raw=true)
 
-   <!-- ![RAID-s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/RAID-second.png?raw=true) -->
+   ![RAID-s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/RAID-second.png?raw=true)
 
    таким же образом разделяется **/dev/md2**.
 
