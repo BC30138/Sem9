@@ -232,8 +232,181 @@
 
 4. Разделите полученные **/dev/md1** и **/dev/md2** на 2 раздела каждый:
    
+   Разделим тома с помощью утилиты **cfdisk**:
+   <!-- ![RAID-f](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/RAID-first.png?raw=true) -->
+
+   <!-- ![RAID-s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/RAID-second.png?raw=true) -->
+
+   таким же образом разделяется **/dev/md2**.
+
+   ```console
+   root@bc30138:~$ lsblk
+   NAME          MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+   sda             8:0    0    8G  0 disk  
+   ├─sda1          8:1    0  6.5G  0 part  /
+   ├─sda2          8:2    0    1K  0 part  
+   ├─sda5          8:5    0  953M  0 part  /home
+   └─sda6          8:6    0  560M  0 part  [SWAP]
+   sdb             8:16   0    1G  0 disk  
+   ├─lab308-soft 254:0    0  100M  0 lvm   
+   └─lab308-docs 254:1    0  100M  0 lvm   
+   sdc             8:32   0    1G  0 disk  
+   └─md0           9:0    0    2G  0 raid0 
+   sdd             8:48   0    1G  0 disk  
+   └─md0           9:0    0    2G  0 raid0 
+   sde             8:64   0    1G  0 disk  
+   sdf             8:80   0    1G  0 disk  
+   └─md1           9:1    0    2G  0 raid0 
+     ├─md1p1     259:1    0  900M  0 md    
+     └─md1p2     259:3    0  1.2G  0 md    
+   sdg             8:96   0    1G  0 disk  
+   └─md1           9:1    0    2G  0 raid0 
+     ├─md1p1     259:1    0  900M  0 md    
+     └─md1p2     259:3    0  1.2G  0 md    
+   sdh             8:112  0    1G  0 disk  
+   └─md2           9:2    0    1G  0 raid1 
+     ├─md2p1     259:4    0  500M  0 md    
+     └─md2p2     259:5    0  546M  0 md    
+   sdi             8:128  0    1G  0 disk  
+   └─md2           9:2    0    1G  0 raid1 
+     ├─md2p1     259:4    0  500M  0 md    
+     └─md2p2     259:5    0  546M  0 md    
+   sr0            11:0    1 55.3M  0 rom   
+   ```
+
 ### Упражнение 6.3. Создание динамических томов
 1. Создайте группу томов с названием *vg* и два линейных динамических тома *lv0*, *lv1* на ее основе, используя имеющиеся IDE и SCSI диски:
-   
+
+      Подготовим физические тома:
+      ```console
+      root@bc30138:~$ pvcreate /dev/sdj
+      WARNING: Device for PV hf17cb-h28t-yecH-GcwB-gW3j-KmaL-3ufdVF not found or rejected by a filter.
+      Physical volume "/dev/sdj" successfully created.
+      root@bc30138:~$ pvcreate /dev/sdk
+      WARNING: Device for PV hf17cb-h28t-yecH-GcwB-gW3j-KmaL-3ufdVF not found or rejected by a filter.
+      Physical volume "/dev/sdk" successfully created.
+      ```
+
+      Проверим:
+      ```console
+      root@bc30138:~$ pvdisplay 
+      --- Physical volume ---
+      PV Name               /dev/sdb
+      VG Name               lab308
+      PV Size               1.00 GiB / not usable 4.00 MiB
+      Allocatable           yes 
+      PE Size               4.00 MiB
+      Total PE              255
+      Free PE               205
+      Allocated PE          50
+      PV UUID               LErISW-fXUd-FFj0-5hMK-6GPc-uwBn-ifPUhN
+      
+      --- Physical volume ---
+      PV Name               [unknown]
+      VG Name               lab308
+      PV Size               1.02 GiB / not usable 4.00 MiB
+      Allocatable           yes 
+      PE Size               4.00 MiB
+      Total PE              261
+      Free PE               261
+      Allocated PE          0
+      PV UUID               hf17cb-h28t-yecH-GcwB-gW3j-KmaL-3ufdVF
+       
+      "/dev/sdk" is a new physical volume of "1.02 GiB"
+      --- NEW Physical volume ---
+      PV Name               /dev/sdk
+      VG Name               
+      PV Size               1.02 GiB
+      Allocatable           NO
+      PE Size               0   
+      Total PE              0
+      Free PE               0
+      Allocated PE          0
+      PV UUID               trJ0BX-wXfr-6Eul-3bz2-xZ5j-AWyt-Dc8tWR
+      
+      "/dev/sdj" is a new physical volume of "1.02 GiB"
+      --- NEW Physical volume ---
+      PV Name               /dev/sdj
+      VG Name               
+      PV Size               1.02 GiB
+      Allocatable           NO
+      PE Size               0   
+      Total PE              0
+      Free PE               0
+      Allocated PE          0
+      PV UUID               YZss5U-fsQP-DvBA-CSTa-Ta5v-7Gi8-IWVpNa
+      ```
+
+      Создаем группу: 
+      ```console
+      root@bc30138:~$ vgcreate vg /dev/sdj /dev/sdk
+      WARNING: Device for PV hf17cb-h28t-yecH-GcwB-gW3j-KmaL-3ufdVF not found or rejected by a filter.
+      Volume group "vg" successfully created
+      ```
+
+      Проверим: 
+      ```console
+      root@bc30138:~$ vgdisplay 
+        --- Volume group ---
+        VG Name               vg
+        System ID             
+        Format                lvm2
+        Metadata Areas        2
+        Metadata Sequence No  1
+        VG Access             read/write
+        VG Status             resizable
+        MAX LV                0
+        Cur LV                0
+        Open LV               0
+        Max PV                0
+        Cur PV                2
+        Act PV                2
+        VG Size               2.04 GiB
+        PE Size               4.00 MiB
+        Total PE              522
+        Alloc PE / Size       0 / 0   
+        Free  PE / Size       522 / 2.04 GiB
+        VG UUID               fliDSh-ZaqJ-zdcf-9aUt-3eUm-jZTh-VNI9nC
+      ```
+
+      Создать линейные логические тома можно так: 
+      ```console
+      root@bc30138:~$ lvcreate vg -n lv0 -L 200MB
+        Logical volume "lv0" created.
+      root@bc30138:~$ lvcreate vg -n lv1 -L 400MB
+        Logical volume "lv1" created.
+      ```
+
 2. Создайте два динамических тома *mirror* (зеркало) и *stripe* (чередующийся набор томов с размером блока 8k) на основе группы *vg*, используя имеющиеся IDE и SCSI диски:
    
+   Это можно сделать с помощью команды **lvcreate**:
+   ```console
+   root@bc30138:~$ lvcreate -i 1 -I 8 -L 150M vg
+     Ignoring stripesize argument with single stripe.
+     Rounding up size to full physical extent 152.00 MiB
+     Logical volume "lvol0" created.
+   root@bc30138:~$ lvcreate -m 1 -I 8 -L 50M vg
+     Ignoring stripesize argument for raid1 devices.
+     Rounding up size to full physical extent 52.00 MiB
+     Logical volume "lvol1" created.
+   ```
+
+   Проверка: 
+   ```console
+   root@bc30138:~$ lsblk
+   ...
+   sdj                   8:144  0    1G  0 disk  
+   ├─vg-lv0            254:2    0  200M  0 lvm   
+   ├─vg-lv1            254:3    0  400M  0 lvm   
+   ├─vg-lvol0          254:4    0  152M  0 lvm   
+   ├─vg-lvol1_rmeta_0  254:6    0    4M  0 lvm   
+   │ └─vg-lvol1        254:10   0   52M  0 lvm   
+   └─vg-lvol1_rimage_0 254:7    0   52M  0 lvm   
+     └─vg-lvol1        254:10   0   52M  0 lvm   
+   sdk                   8:160  0    1G  0 disk  
+   ├─vg-lvol1_rmeta_1  254:8    0    4M  0 lvm   
+   │ └─vg-lvol1        254:10   0   52M  0 lvm   
+   └─vg-lvol1_rimage_1 254:9    0   52M  0 lvm   
+     └─vg-lvol1        254:10   0   52M  0 lvm   
+   sr0                  11:0    1 55.3M  0 rom  
+   ```
