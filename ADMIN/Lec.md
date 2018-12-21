@@ -514,3 +514,71 @@ $ vim /ets/SSH/sshd_config # или что-то вроде
     password authentification  yes
     PermitRootLogin prohibit-password # либо yes.
 ```
+
+# Лекция 14
+## 21.12.2018
+### X server
+
+```console
+apt install xserver-xorg
+apt install x11-utils
+apt install x11-apps
+```
+
+в другой консоли
+```console
+$ x
+```
+
+обратно в первую консоль: 
+
+```console
+$ DISPLAY=:0
+$ export DISPLAY=:0
+$ xeyes
+```
+
+в другой консоли теперь глаза прикольные
+
+чтобы завершить глаза, в первой консоли
+```console
+$ xkill
+```
+
+теперь в окне с глазами курсор станет черепом, для того чтобы выключить глаза клик по ним
+
+чтобы разместить элемент и задать ему размер
+
+```console
+$ xcalc -geometry 100x100 + 200 + 100
+```
+
+Для удобства:
+```console
+$ apt install twm
+$ twm
+```
+
+так же потребуется xinit
+
+```console
+$ xinit
+```
+
+выключить сервер 
+
+```console
+$ xkillall Xorg
+$ chvt 1
+```
+
+утсановим более удобную оболочку
+
+```console
+$ apt install fluxbox
+```
+
+```console
+$ service xdm start
+```
+
