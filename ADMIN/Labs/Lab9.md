@@ -83,7 +83,7 @@
 
    На *tty10* отображена следующая информация:
 
-   <!-- ![tty10f](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10f.png?raw=true)  -->
+   ![tty10f](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10f.png?raw=true) 
 
    *tty11* и *tty12* пустые.
 
@@ -92,10 +92,10 @@
   *tty11* по-прежнему пуст, чего не скажешь о tty *tty10* и *tty12*:
 
    *tty10*
-  <!-- ![tty10s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10s.png?raw=true) -->
+  ![tty10s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10s.png?raw=true)
 
    *tty12*
-  <!-- ![tty12s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty12s.png?raw=true) -->
+  ![tty12s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty12s.png?raw=true)
 
 4. Настройте сценарий запуска подсистемы журнализации событий так, чтобы демон **syslogd** разрешал возможность приема сообщений от узлов сети:
 
@@ -135,7 +135,7 @@
    *tty11* - думаю неправильно сконфигурировано, но вариант с "!=kern.!=debug          /dev/tty11" тоже не подходит, так как ругается на синтаксис.
 
    *tty12*
-   <!-- ![tty10t](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10t.png?raw=true) -->
+   ![tty10t](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10t.png?raw=true)
 
 ### Упражнение 9.3. Средства печати UNIX
 1. Установите систему печати **cups**:
@@ -181,6 +181,28 @@
    ```
 
    Далее заходим из браузера внешней системы на 127.0.0.1:631 и делаем следующее: 
+
+   ![cups1](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/cups1.png?raw=true)
+
+   --------
+
+   ![cups2](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/cups2.png?raw=true)
+      
+   --------
+
+   ![cups3](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/cups3.png?raw=true)
+      
+   --------
+
+   ![cups4](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/cups4.png?raw=true)
+      
+   --------
+
+   ![cups5](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/cups5.png?raw=true)
+      
+   --------
+
+
    
 4. При помощи команд **lpr,lpq,lprm (lp,lpstat,cancel)**:
    
@@ -226,3 +248,4 @@
       ```
       
       **man ls** в виде **pdf**: 
+      ![pdfls](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/pdf.png?raw=true)
