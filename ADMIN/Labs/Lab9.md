@@ -78,7 +78,7 @@
    *.warn                          :omusrmsg:root
    *.err                           :omusrmsg:root
    local7.*                        /dev/tty10
-   *.!=debug;kern.none             /dev/tty11
+   *.warn;*.warn;*.err             /dev/tty11
    kern.*                          /dev/tty12
    ```
 
@@ -101,11 +101,13 @@
 
    ![tty10f](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10f.png?raw=true) 
 
-   *tty11* и *tty12* пустые.
+   *tty11* выводит тоже самое, что и приходит в root.
+    
+    *tty12* пуст.
 
 3. Перезапустите операционную систему, проследите за сообщениями на терминалах *tty10, tty11, tty12*:
 
-  *tty11* по-прежнему пуст, чего не скажешь о tty *tty10* и *tty12*:
+  *tty11* аналогично, чего не скажешь о tty *tty10* и *tty12*:
 
    *tty10*
   ![tty10s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10s.png?raw=true)
@@ -146,9 +148,7 @@
     liblogging-stdlog: error during parsing file /etc/rsyslog.conf, on or before line 98: warnings occured in file '/etc/rsyslog.conf' around line 98 [v8.24.0 try http://www.rsyslog.com/e/2207 ]
    ```
 
-   на *tty12* все по старому. 
-
-   *tty11* - думаю неправильно сконфигурировано, но вариант с "!=kern.!=debug          /dev/tty11" тоже не подходит, так как ругается на синтаксис.
+   на *tty12* и *tty11* все по старому. 
 
    *tty12*
    ![tty10t](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10t.png?raw=true)
