@@ -4,16 +4,32 @@
     - ежедневно в 2 часа утра выполнялась резервная копия баз данных пользовательских учетных записей, с помещением сжатого архива c названием **users-<дата создания резервной копии>.tar.gz** в поддиректорию **backup** домашней директории суперпользователя:
 
     - Ежедневно в 3 часа утра выполнялся поиск и удаление старых (возрастом более недели) архивов баз данных пользовательских учетных записей, в поддиректории **backup**, домашней директории суперпользователя:
-  
-    Для этого требуется изменить файл, возвращаемый следующей командой:
+
+    Создадим два скрипта.
+
+    **/var/backups/users/makebackup.sh**
+    ```console
+    #!/bin/bash
+
+    tar -zcf /var/backups/users/user-$(date +%y-%m-%d).tgz /home
+    ```
+
+    **/var/backups/users/deletebackup.sh**
+    ```console
+    #!/bin/bash
+
+    find /var/backups/users -type f -mtime +7 -print0 | xargs -0 rm -f 
+    ```
+
+    Требуется изменить файл, возвращаемый следующей командой:
     ```console
     root@bc30138:~$ crontab -e
-    ```
-    
+    ``` 
+
     В файл допишем строки:
     ```console
-      0 2   *   *   *    tar -zcf /var/backups/users/user-$(date +%y-%m-%d).tgz /home
-      0 3   *   *   *    find /var/backups/users -type f -mtime +7 -print0 | xargs -0 rm -f  
+      0 2   *   *   *     /var/backups/users/makebackup.sh
+      0 3   *   *   *     /var/backups/users/deletebackup.sh
     ```
 
 2. Путем перевода текущего времени в системе, проверьте корректность выполнения настроенных заданий:

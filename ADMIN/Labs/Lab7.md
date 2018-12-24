@@ -230,7 +230,7 @@
    
    Затем:
    ```console
-   root@bc30138:~$ mount -o remount, ro /
+   root@bc30138:~$ mount -o remount,ro /
    root@bc30138:~$ fsck /
    fsck from util-linux 2.29.2
    e2fsck 1.43.4 (31-Jan-2017)
