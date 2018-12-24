@@ -91,13 +91,49 @@
 
   *tty11* по-прежнему пуст, чего не скажешь о tty *tty10* и *tty12*:
 
-  
+   *tty10*
+  <!-- ![tty10s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10s.png?raw=true) -->
+
+   *tty12*
+  <!-- ![tty12s](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty12s.png?raw=true) -->
 
 4. Настройте сценарий запуска подсистемы журнализации событий так, чтобы демон **syslogd** разрешал возможность приема сообщений от узлов сети:
 
+   Раскомментируем строки в файле **/etc/rsyslog.conf**:
+   ```console
+   # provides TCP syslog reception
+   module(load="imtcp")
+   input(type="imtcp" port="514")
+   ```
+
 5. Настройте подсистему журнализации событий так, что бы вся информация о событиях всех подсистем любой важности посылалась на соседний узел сети:
 
+   Для простоты будем посылать себе же, для этого добавим в файл **/etc/rsyslog.conf**:
+   ```console
+   *.*                             root@127.0.0.1
+   ```
+
 6. Переинициализируйте подсистему журнализации событий. Проследите за сообщениями на терминалах *tty10, tty11, tty12*:
+
+   ```console
+   root@bc30138:~$ service rsyslog restart
+   root@bc30138:~$  liblogging-stdlog:  [origin software="rsyslogd" swVersion="8.24.0" x-pid="2181" x-info="http://www.rsyslog.com"] exiting on signal 15.
+    systemd[1]: Stopping System Logging Service...
+    systemd[1]: Stopped System Logging Service.
+    systemd[1]: Starting System Logging Service...
+    liblogging-stdlog:  [origin software="rsyslogd" swVersion="8.24.0" x-pid="2221" x-info="http://www.rsyslog.com"] start
+    systemd[1]: Started System Logging Service.
+    liblogging-stdlog: action 'root' treated as ':omusrmsg:root' - please use ':omusrmsg:root' syntax instead, 'root' will not be supported in the future [v8.24.0 try http://www.rsyslog.com/e/2184 ]
+    liblogging-stdlog: action 'root' treated as ':omusrmsg:root' - please use ':omusrmsg:root' syntax instead, 'root' will not be supported in the future [v8.24.0 try http://www.rsyslog.com/e/2184 ]
+    liblogging-stdlog: error during parsing file /etc/rsyslog.conf, on or before line 98: warnings occured in file '/etc/rsyslog.conf' around line 98 [v8.24.0 try http://www.rsyslog.com/e/2207 ]
+    liblogging-stdlog: error during parsing file /etc/rsyslog.conf, on or before line 98: warnings occured in file '/etc/rsyslog.conf' around line 98 [v8.24.0 try http://www.rsyslog.com/e/2207 ]
+    liblogging-stdlog: error during parsing file /etc/rsyslog.conf, on or before line 98: warnings occured in file '/etc/rsyslog.conf' around line 98 [v8.24.0 try http://www.rsyslog.com/e/2207 ]
+   ```
+
+   на *tty12* все по старому. 
+   
+   *tty11* - думаю неправильно сконфигурировано, но вариант с "!=kern.!=debug          /dev/tty11" тоже не подходит.
+
 
 ### Упражнение 9.3. Средства печати UNIX
 1. Установите систему печати **cups**:
