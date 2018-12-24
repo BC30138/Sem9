@@ -72,11 +72,23 @@
    service lightdm start
    ```
 
+   Чтобы отключить **KDE**:
+   ```console
+   root@bc30138:~$ systemctl disable lightdm.service
+   Synchronizing state of lightdm.service with SysV service script with /lib/systemd/systemd-sysv-install.
+   Executing: /lib/systemd/systemd-sysv-install disable lightdm
+   Removed /etc/systemd/system/display-manager.service.
+   ```
+
 2. Войдите под пользователем *vinnie*, удостоверьтесь в правильности конфигурации:
 
+   ![vinnie](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/vinnie.png?raw=true)
+   ![KDE](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/KDE.png?raw=true)
 ### Упражнение 10.3. Графический вход в систему
+Было установлено и проверено в прошлом пункте.
+
 1. Настройте автоматический запуск графической среды с использованием менеджера дисплеев **kdm**:
-   
+
 2. Перезагрузите операционную систему. Убедитесь, что доступен графический вход в систему.
    
 3. Закончите графический сеанс работы в операционной системе.
