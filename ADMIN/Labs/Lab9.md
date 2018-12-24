@@ -110,7 +110,7 @@
 
    Для простоты будем посылать себе же, для этого добавим в файл **/etc/rsyslog.conf**:
    ```console
-   *.*                             root@127.0.0.1
+   *.*                             @127.0.0.1
    ```
 
 6. Переинициализируйте подсистему журнализации событий. Проследите за сообщениями на терминалах *tty10, tty11, tty12*:
@@ -131,25 +131,98 @@
    ```
 
    на *tty12* все по старому. 
-   
-   *tty11* - думаю неправильно сконфигурировано, но вариант с "!=kern.!=debug          /dev/tty11" тоже не подходит.
 
+   *tty11* - думаю неправильно сконфигурировано, но вариант с "!=kern.!=debug          /dev/tty11" тоже не подходит, так как ругается на синтаксис.
+
+   *tty12*
+   <!-- ![tty10t](https://github.com/BC30138/Studying/blob/master/ADMIN/Labs/Screens/tty10t.png?raw=true) -->
 
 ### Упражнение 9.3. Средства печати UNIX
 1. Установите систему печати **cups**:
    
+   ```console
+   root@bc30138:~$ apt install cups
+   ```
+
 2. Установите виртуальный драйвер для печати в PDF в систему печати **cups**:
+
+   ```console
+   root@bc30138:~$ apt install cups-pdf
+   ```
    
 3. Используя браузер в графической среде, зайдите по адресу http://127.0.0.1:631 и добавьте принтер с именем *LocalPrinter* использующий драйвер PDF.
+
+   У нас нет графической среды, поэтому просто дадим доступ в внешнего ip. 
+
+   Изменим файл **/etc/cups/cupsd.conf**:
+   ```console
+   # Only listen for connections from the local machine.
+   Listen 0.0.0.0:631
+   Listen /var/run/cups/cups.sock
+   ```
+
+   ```console
+   # Restrict access to the server...
+   <Location />
+     Order allow,deny
+     Allow from all
+   </Location>
+
+   # Restrict access to the admin pages...
+   <Location /admin>
+     Order allow,deny
+     Allow from all
+   </Location>
+   ```
+
+   Не забываем перезагрузить:
+   ```console
+   root@bc30138:~$ service cups restart
+   ```
+
+   Далее заходим из браузера внешней системы на 127.0.0.1:631 и делаем следующее: 
    
 4. При помощи команд **lpr,lpq,lprm (lp,lpstat,cancel)**:
    
     a. просмотрите состояния принтера с именем *LocalPrinter*:
-    
+
+      ```console
+      root@bc30138:~$ lpstat -t
+      scheduler is running
+      system default destination: PDF
+      device for LocalPrinter: cups-pdf:/
+      device for PDF: cups-pdf:/
+      LocalPrinter accepting requests since Sun 23 Dec 2018 07:34:28 PM EST
+      PDF accepting requests since Sun 23 Dec 2018 07:08:25 PM EST
+      printer LocalPrinter is idle.  enabled since Sun 23 Dec 2018 07:34:28 PM EST
+      printer PDF is idle.  enabled since Sun 23 Dec 2018 07:08:25 PM EST
+      ```
+
     b. распечатайте любой файл на принтере *LocalPrinter*, проследите за сообщениями:
     
+      ```console
+      root@bc30138:~$ lp -d LocalPrinter TEST
+      request id is LocalPrinter-1 (1 file(s))
+      ```
+
     c. просмотрите состояния принтера *LocalPrinter*, проследите за сообщениями:
     
+      ```console
+      root@bc30138:~$ lpstat -W "all"
+      LocalPrinter-1          root              1024   Sun 23 Dec 2018 07:41:13 PM EST
+      ```
+
     d. удалите задание на печать из очереди принтера *LocalPrinter*, проследите за сообщениями:
 
+      ```console
+      root@bc30138:~$ cancel LocalPrinter
+      ```
+
     e. распечатайте любую известную страницу руководства **man** на принтере *LocalPrinter*, проследите за сообщениями:
+
+      ```console
+      root@bc30138:~$ man ls | lp -d LocalPrinter
+      request id is LocalPrinter-5 (0 file(s))
+      ```
+      
+      **man ls** в виде **pdf**: 
