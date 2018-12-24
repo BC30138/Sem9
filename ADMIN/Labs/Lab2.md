@@ -85,7 +85,8 @@
     может выполнять. Для этого добавим следующую строку в **/etc/sudoers**  (**sudoedit** для безопасности, этот пользователь будет изолирован от остальной системы):
 
     ```console
-    netadmin ALL=(ALL:ALL) sudoedit /sbin/iptables, /sbin/ifconfig, /sbin/ip, /sbin/route, /bin/netstat, /etc/network/interfaces
+    netadmin ALL=(ALL:ALL)  /sbin/iptables, /sbin/ifconfig, /sbin/ip, /sbin/route, /bin/netstat
+    netadmin ALL=(ALL:ALL) sudoedit /etc/network/interfaces
     ```
 
     Либо это можно сделать передав пользователю права на файл можно с помощью команды **chown**:
