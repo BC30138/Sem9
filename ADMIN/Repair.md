@@ -44,7 +44,9 @@
 3.  SYSTEM HALTED или reboot после входа
 
    Найти странные команды типа halt, reboot в файлах: 
+   ```console
    /root/.bashrc
    /etc/bash.bashrc
    /etc/crontab
    /etc/profile
+   ```
